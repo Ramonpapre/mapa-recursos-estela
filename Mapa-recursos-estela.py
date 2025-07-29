@@ -1,28 +1,48 @@
-# Guarda este archivo como: Mapa_recursos_estela.py
 import streamlit as st
 import pandas as pd
 from st_aggrid import AgGrid, GridOptionsBuilder, GridUpdateMode
 
-# 1) Configuración de la página (debe ser lo primero)
-st.set_page_config(
-    page_title="Buscador de recursos E-Stela",
-    layout="wide",
-)
+# Configuración de la página
+st.set_page_config(page_title="Buscador de recursos e-stela", layout="wide")
 
-# 2) Inyección de CSS para imagen de fondo (opcional)
-st.markdown("""
+# URL directa de la imagen en Googleusercontent
+fondo_url = "https://lh5.googleusercontent.com/D3rftlxves6aUzGpGljcUZBrcoKyFNuKMRYOhVPk7_XGA7zl0b7yiGUamcbEFhbSFyQRmy_lsh_R0G0SMK_wAYgYuS658zQJuh-74GLmC2CedrERcKqrhPQ7aZkeJghUrC3gLF1kiuEj_uAkEnk4iGQH-I_5fv_sedreizfuKtTzkBhh0eMvew=w1280"
+
+# Aplicar imagen de fondo ajustada proporcionalmente
+st.markdown(f"""
     <style>
-    .stApp {
-        background-image: url("https://drive.google.com/uc?export=view&id=1Fe9_6CuknIC3aJjpbbACpyK6cGmLO1voj");
-        background-position: left bottom;
-        background-repeat: no-repeat;
-        background-size: 200px auto;
-    }
+    .stApp {{
+        background: url('{fondo_url}') no-repeat center center fixed;
+        background-size: contain; /* Ajuste proporcional sin recorte */
+        background-color: #000; /* Relleno para bordes si sobra espacio */
+    }}
+    @media (max-width: 768px) {{
+        .stApp {{
+            background-size: contain;
+            background-position: center top;
+        }}
+    }}
     </style>
 """, unsafe_allow_html=True)
 
-# 3) Título principal
-st.title("🔍 Buscador de recursos E-Stela")
+# Fuente Montserrat (excepto resultados)
+st.markdown("""
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+    html * {{
+        font-family: 'Montserrat', sans-serif !important;
+        font-weight: 400 !important;
+    }}
+    h1, h2, h3, h4, h5, h6 {{
+        font-weight: 600 !important;
+    }}
+    .ag-theme-streamlit, .ag-cell, .ag-header-cell {{
+        font-family: Arial, sans-serif !important;
+    }}
+    </style>
+""", unsafe_allow_html=True)
 
 @st.cache_data
 def load_data():
@@ -32,46 +52,43 @@ def load_data():
         "/pub?output=csv"
     )
     df = pd.read_csv(CSV_URL, dtype=str)
-    df.columns = (
-        df.columns.str.strip()
-                  .str.replace("\n", " ")
-                  .str.replace("\r", " ")
-    )
+    df.columns = df.columns.str.strip().str.replace("\n", " ").str.replace("\r", " ")
     return df
 
-# 4) Carga de datos
+# Cargar datos
 df = load_data()
 df.columns = [c.strip() for c in df.columns]
 
-# 5) Detectar columnas dinámicas
-contenido_col = next(c for c in df.columns if "contenidos" in c.lower())
-rie_col       = next(c for c in df.columns if "rie" in c.lower())
-grado_col     = next(c for c in df.columns if c.lower() == "grado")
-espacio_col   = next(c for c in df.columns if c.lower() == "espacio")
-unidad_col    = next(c for c in df.columns if "unidad" in c.lower())
+# Detectar columnas
+t_col = next(c for c in df.columns if "contenidos" in c.lower())
+rie_col = next(c for c in df.columns if "rie" in c.lower())
+grado_col = next(c for c in df.columns if c.lower() == "grado")
+espacio_col = next(c for c in df.columns if c.lower() == "espacio")
+unidad_col = next(c for c in df.columns if "unidad" in c.lower())
 
-# 6) Inicializar estado de búsqueda
+df = df.rename(columns={t_col: "Contenido del Programa de Primaria"})
+t_col = "Contenido del Programa de Primaria"
+
 if "search_clicked" not in st.session_state:
     st.session_state.search_clicked = False
 
-# Callback para limpiar filtros
 def clear_filters():
     st.session_state.search_clicked = False
-    st.session_state.by_content     = False
-    st.session_state.by_rie         = False
-    st.session_state.content_term   = ""
-    st.session_state.rie_term       = ""
-    st.session_state.grados         = []
-    st.session_state.espacios       = []
-    st.session_state.unidades       = []
+    st.session_state.by_content = False
+    st.session_state.by_rie = False
+    st.session_state.content_term = ""
+    st.session_state.rie_term = ""
+    st.session_state.grados = []
+    st.session_state.espacios = []
+    st.session_state.unidades = []
 
-# 7) Sidebar: filtros
+# Filtros
 st.sidebar.markdown("<h2>Filtros de búsqueda</h2>", unsafe_allow_html=True)
-by_content = st.sidebar.checkbox(f"Buscar en los {contenido_col}", key="by_content")
-by_rie     = st.sidebar.checkbox(f"Buscar en {rie_col}",     key="by_rie")
+by_content = st.sidebar.checkbox("Buscar en los Contenidos del Programa de Educación Primaria", key="by_content")
+by_rie = st.sidebar.checkbox(f"Buscar en {rie_col}", key="by_rie")
 
 content_term = (
-    st.sidebar.text_input("", placeholder=f"Palabra o frase de los {contenido_col}…", key="content_term")
+    st.sidebar.text_input("", placeholder="Palabra o frase del programa", key="content_term")
     if by_content else ""
 )
 rie_term = (
@@ -79,27 +96,24 @@ rie_term = (
     if by_rie else ""
 )
 
-grados   = st.sidebar.multiselect("Grado", sorted(df[grado_col].dropna().unique()), key="grados")
-espacios = st.sidebar.multiselect("Espacio", sorted(df[espacio_col].dropna().unique()), key="espacios")
-unidades = st.sidebar.multiselect("Unidad Curricular", sorted(df[unidad_col].dropna().unique()), key="unidades")
+grados = st.sidebar.multiselect("Grado", sorted(df[grado_col].dropna().unique()), key="grados", placeholder="Elige una opción")
+espacios = st.sidebar.multiselect("Espacio", sorted(df[espacio_col].dropna().unique()), key="espacios", placeholder="Elige una opción")
+unidades = st.sidebar.multiselect("Unidad Curricular", sorted(df[unidad_col].dropna().unique()), key="unidades", placeholder="Elige una opción")
 
-# 8) Botones alineados: Buscar a la izquierda, Limpiar a la derecha
 col1, col2 = st.sidebar.columns(2)
 with col1:
     col1.button("🔍 Buscar", on_click=lambda: st.session_state.update(search_clicked=True))
 with col2:
     col2.button("🧹 Limpiar", on_click=clear_filters)
 
-# 9) Antes de buscar
+# Mostrar resultados solo si se busca
 if not st.session_state.search_clicked:
-    st.write("Configura los filtros y haz clic en **Buscar** para ver los recursos")
     st.stop()
 
-# 10) Aplicar filtros de texto
 data = df.copy()
 conds = []
 if by_content and content_term:
-    conds.append(data[contenido_col].str.contains(content_term, case=False, na=False))
+    conds.append(data[t_col].str.contains(content_term, case=False, na=False))
 if by_rie and rie_term:
     conds.append(data[rie_col].str.contains(rie_term, case=False, na=False))
 if conds:
@@ -108,7 +122,6 @@ if conds:
         mask |= c
     data = data[mask]
 
-# 11) Aplicar filtros de multiselección
 if grados:
     data = data[data[grado_col].isin(grados)]
 if espacios:
@@ -116,35 +129,22 @@ if espacios:
 if unidades:
     data = data[data[unidad_col].isin(unidades)]
 
-# 12) Preparar datos y mostrar conteo
 data_to_show = data.reset_index(drop=True)
-st.write(f"Se encontraron {len(data_to_show)} recursos:")
 
-# 13) Configurar y renderizar AgGrid
-gb = GridOptionsBuilder.from_dataframe(data_to_show)
-gb.configure_pagination(paginationAutoPageSize=True)
-default_style = {"display": "flex", "alignItems": "center", "justifyContent": "center"}
-gb.configure_default_column(
-    wrapText=True,
-    autoHeight=True,
-    wrapHeaderText=True,
-    autoHeaderHeight=True,
-    cellStyle=default_style
-)
-gb.configure_grid_options(
-    enableRangeSelection=True,
-    enableClipboard=True,
-    enableCellTextSelection=True
-)
-grid_options = gb.build()
+if len(data_to_show) > 0:
+    gb = GridOptionsBuilder.from_dataframe(data_to_show)
+    gb.configure_pagination(paginationAutoPageSize=True)
+    gb.configure_default_column(wrapText=True, autoHeight=True, wrapHeaderText=True, autoHeaderHeight=True)
+    gb.configure_grid_options(enableRangeSelection=True, enableClipboard=True, enableCellTextSelection=True)
+    grid_options = gb.build()
 
-AgGrid(
-    data_to_show,
-    gridOptions=grid_options,
-    enable_enterprise_modules=False,
-    fit_columns_on_grid_load=True,
-    height=600,
-    selection_mode='single',
-    update_mode=GridUpdateMode.SELECTION_CHANGED,
-    allow_unsafe_jscode=True,
-)
+    AgGrid(
+        data_to_show,
+        gridOptions=grid_options,
+        enable_enterprise_modules=False,
+        fit_columns_on_grid_load=True,
+        height=600,
+        selection_mode='single',
+        update_mode=GridUpdateMode.SELECTION_CHANGED,
+        allow_unsafe_jscode=True,
+    )
