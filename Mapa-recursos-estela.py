@@ -6,7 +6,7 @@ from st_aggrid import AgGrid, GridOptionsBuilder, GridUpdateMode
 st.set_page_config(page_title="Buscador de recursos e-stela", layout="wide")
 
 # URL directa de la imagen en Googleusercontent
-fondo_url = "https://lh3.googleusercontent.com/LlhOzeZIKxG59bJZzSoJoV7rePyGnvvqNvWS6jbCWrsXxaQg4Wsi1gEP2zsY4NtRIVNws396xIAfdL6C1s0DX1W0MzfbrxDuDfQlmj8lfglyZeB2Y6vbAtFKYiToKscrlolLvvm82EdCe6KdkVMPp90soqShMihg6-VG8o8Ux_KKkk_Z940jpw=w1280"
+fondo_url = "https://lh6.googleusercontent.com/H32mua3oTV6TGXv7amvzpyI9gKPjx3lgwD_03iaz1nmfOkNv5bnxlBtt-9wDRD6JHYvp16vYB8JATk-k0n6YVKR7uT1hXumDk6Y53iYdLfRqZwL5e7-6H5qCupMU0H9pJpQ8LqEcP-Tq3WE3CKkYyeqC8aVaGMQL6scwmKXOXI2P8RI3_AKt0Q=w1280"
 
 # Aplicar imagen de fondo ajustada proporcionalmente
 st.markdown(f"""
