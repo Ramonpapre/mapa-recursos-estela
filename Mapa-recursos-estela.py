@@ -5,7 +5,7 @@ from st_aggrid import AgGrid, GridOptionsBuilder, GridUpdateMode
 # Configuración de la página
 st.set_page_config(page_title="Buscador de recursos e-stela", layout="wide")
 
-# URL directa de la imagen actualizada en Googleusercontent
+# URL directa de la nueva imagen en Googleusercontent
 fondo_url = "https://lh3.googleusercontent.com/RgI1Jv1scZCNCly5WK2R6Ky4o9IWQXtYhDPW5r5YVVkXCI4x-mN0vqtCSoZdRMiHy-cehlnI_ICQ9TTtHPIK2T04AYPPDDDZ626_6Lacl_ipPmB6e84Zv0ROcVgTTd3b5dOscQ9euOvzpbPMVM_AeUBgZZoObtGrxUoQUS_ykzRWoiUbNMH4_Q=w1280"
 
 # Aplicar imagen de fondo con cover para evitar bordes negros
