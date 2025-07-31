@@ -5,22 +5,15 @@ from st_aggrid import AgGrid, GridOptionsBuilder, GridUpdateMode
 # Configuración de la página
 st.set_page_config(page_title="Buscador de recursos e-stela", layout="wide")
 
-# URL directa de la imagen en Googleusercontent
+# URL directa de la imagen actualizada en Googleusercontent
 fondo_url = "https://lh6.googleusercontent.com/H32mua3oTV6TGXv7amvzpyI9gKPjx3lgwD_03iaz1nmfOkNv5bnxlBtt-9wDRD6JHYvp16vYB8JATk-k0n6YVKR7uT1hXumDk6Y53iYdLfRqZwL5e7-6H5qCupMU0H9pJpQ8LqEcP-Tq3WE3CKkYyeqC8aVaGMQL6scwmKXOXI2P8RI3_AKt0Q=w1280"
 
-# Aplicar imagen de fondo ajustada proporcionalmente
+# Aplicar imagen de fondo con cover para evitar bordes negros
 st.markdown(f"""
     <style>
     .stApp {{
         background: url('{fondo_url}') no-repeat center center fixed;
-        background-size: contain; /* Ajuste proporcional sin recorte */
-        background-color: #000; /* Relleno para bordes si sobra espacio */
-    }}
-    @media (max-width: 768px) {{
-        .stApp {{
-            background-size: contain;
-            background-position: center top;
-        }}
+        background-size: cover; /* Cubre todo el área eliminando bordes negros */
     }}
     </style>
 """, unsafe_allow_html=True)
