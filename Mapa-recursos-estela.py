@@ -111,9 +111,9 @@ data_to_show = data.reset_index(drop=True)
 if len(data_to_show) > 0:
     gb = GridOptionsBuilder.from_dataframe(data_to_show)
     gb.configure_pagination(paginationAutoPageSize=True)
-    gb.configure_default_column(wrapText=True, autoHeight=True, wrapHeaderText=True, autoHeaderHeight=True)
-    gb.configure_grid_options(enableRangeSelection=True, enableClipboard=True, enableCellTextSelection=True)
-    gb.configure_column("Contenido del Programa de Primaria", width=400)
+    gb.configure_default_column(wrapText=True, autoHeight=True, wrapHeaderText=True, autoHeaderHeight=True, resizable=True)
+    gb.configure_grid_options(enableRangeSelection=True, enableClipboard=True, enableCellTextSelection=True, domLayout='autoHeight')
+    gb.configure_column("Contenido del Programa de Primaria", flex=2, minWidth=300)
     grid_options = gb.build()
 
     AgGrid(
