@@ -99,6 +99,13 @@ with col1:
 with col2:
     col2.button("🧹 Limpiar", on_click=clear_filters)
 
+# Imagen pequeña centrada debajo de los botones en la barra lateral
+st.sidebar.markdown("""
+    <div style='text-align: center; margin-top: 20px;'>
+        <img src='https://lh3.googleusercontent.com/1JtO4LDmm5yOCEnjIr3sBKI20Hqz0b6msB5chINRS4TZuL8UyDn69bYzuwK7lnHTxGr59as95mprtvrU1GRDm7b2adiF8QgM5OEhDOfV0-sqCFmslQvW3q_WA9ENRJVzkac6UyKjb6_3cyJyFg_jXgMSQOJYhwEevCCQFp7y75xsGpX7LrM3=w1280' width='120'>
+    </div>
+""", unsafe_allow_html=True)
+
 # Mostrar resultados solo si se busca
 if not st.session_state.search_clicked:
     st.stop()
